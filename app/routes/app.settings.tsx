@@ -1,6 +1,17 @@
-import { FormLayout, TextField, Page, Card, Button } from "@shopify/polaris";
-import { useState, useCallback } from "react";
-import { Form, useActionData } from "@remix-run/react";
+import {
+  FormLayout,
+  TextField,
+  Page,
+  Card,
+  Button,
+  Banner,
+} from "@shopify/polaris";
+import {
+  Form,
+  useActionData,
+  useSubmit,
+  useNavigation,
+} from "@remix-run/react";
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useForm, useField, notEmpty } from "@shopify/react-form";
@@ -14,8 +25,10 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function SettignsForm() {
   const actionData = useActionData<typeof action>();
+  const navigation = useNavigation();
+  const remixSubmit = useSubmit();
   // form hook
-  const { fields, submitting } = useForm({
+  const { fields, submitting, submit } = useForm({
     fields: {
       storeName: useField({
         value: "",
@@ -38,27 +51,28 @@ export default function SettignsForm() {
       }),
     },
     onSubmit: async (fieldValues) => {
+      console.log("Client-side validation passed", fieldValues);
+      // Submit to Remix action if client-side validation passes
+      remixSubmit(fieldValues, { method: "post" });
       return { status: "success" };
     },
   });
 
-  // const [storeName, setStoreName] = useState<string>("");
-  // const [email, setEmail] = useState<string>("");
-  // const [errorMessage, setErrorMessage] = useState<string>("");
-
-  // const handleChange = useCallback(
-  //   (setter: React.Dispatch<React.SetStateAction<string>>) => {
-  //     return (value: string) => {
-  //       setter(value);
-  //     };
-  //   },
-  //   [],
-  // );
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const result = await submit();
+    if (result.status === "fail") {
+      console.log("Form has errors, not submitting");
+    }
+  };
 
   return (
     <Page narrowWidth>
       <Card>
-        <Form method="POST">
+        {actionData?.success && (
+          <Banner title="Success">Form submitted successfully!</Banner>
+        )}
+        <Form method="POST" onSubmit={handleSubmit}>
           <FormLayout>
             <TextField
               {...fields.storeName}
@@ -81,16 +95,16 @@ export default function SettignsForm() {
             />
             <Button
               textAlign="center"
-              disabled={submitting}
+              disabled={submitting || navigation.state === "submitting"}
+              loading={navigation.state === "submitting"}
               submit={true}
               variant="primary"
             >
-              Submit
+              {navigation.state === "submitting" ? "Submitting..." : "Submit"}
             </Button>
           </FormLayout>
         </Form>
       </Card>
-      {actionData && <pre>{JSON.stringify(actionData, null, 2)}</pre>}
     </Page>
   );
 }
