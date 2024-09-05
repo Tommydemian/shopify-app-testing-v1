@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   FormLayout,
   TextField,
@@ -15,6 +16,7 @@ import {
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useForm, useField, notEmpty } from "@shopify/react-form";
+import { RichTextEditorWrapper } from "../components/RichTextEditor.client";
 
 export async function action({ request }: ActionFunctionArgs) {
   let formData = await request.formData();
@@ -24,9 +26,12 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function SettignsForm() {
+  // one-liners
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
   const remixSubmit = useSubmit();
+  const [content, setContent] = useState("");
+
   // form hook
   const { fields, submitting, submit } = useForm({
     fields: {
@@ -81,7 +86,7 @@ export default function SettignsForm() {
               name="store-name"
               helpText="Enter your store's display name. This will be visible to your customers."
               label="Store name"
-              autoComplete="fill"
+              autoComplete="text"
               clearButton
               onClearButtonClick={() => fields.storeName.onChange("")}
             />
@@ -93,6 +98,11 @@ export default function SettignsForm() {
               label="Account email"
               autoComplete="email"
             />
+            {/* <RichTextEditorWrapper
+              label="Description"
+              value={content}
+              onChange={setContent}
+            /> */}
             <Button
               textAlign="center"
               disabled={submitting || navigation.state === "submitting"}

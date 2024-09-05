@@ -3,7 +3,7 @@
 client_id = "8cb7dcf1cc2b89196bad69bc30f4d157"
 name = "testing-app-v1"
 handle = "testing-app-v1-1"
-application_url = "https://seven-joel-conditional-prayers.trycloudflare.com"
+application_url = "https://viewpicture-smithsonian-blogging-avoid.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = ""
 
 [auth]
 redirect_urls = [
-  "https://seven-joel-conditional-prayers.trycloudflare.com/auth/callback",
-  "https://seven-joel-conditional-prayers.trycloudflare.com/auth/shopify/callback",
-  "https://seven-joel-conditional-prayers.trycloudflare.com/api/auth/callback"
+  "https://viewpicture-smithsonian-blogging-avoid.trycloudflare.com/auth/callback",
+  "https://viewpicture-smithsonian-blogging-avoid.trycloudflare.com/auth/shopify/callback",
+  "https://viewpicture-smithsonian-blogging-avoid.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
